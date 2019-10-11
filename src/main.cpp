@@ -5,18 +5,23 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-const GLchar *vertex_shader_source = "#version 330 core\n"
-                                     "layout (location = 0) in vec3 position;\n"
-                                     "void main()\n"
-                                     "{\n"
-                                     "    gl_Position = vec4(position.x, position.y, position.z, 1.0);\n"
-                                     "}";
-const GLchar *fragment_shader_source = "#version 330 core\n"
-                                       "out vec4 color;\n"
-                                       "void main()\n"
-                                       "{\n"
-                                       "    color = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-                                       "}";
+const GLchar *vertex_shader_source = R"glsl(
+    #version 330 core
+    layout (location = 0) in vec3 position;
+    void main()
+    {
+        gl_Position = vec4(position.x, position.y, position.z, 1.0);
+    }
+)glsl";
+
+const GLchar *fragment_shader_source = R"glsl(
+    #version 330 core
+    out vec4 color;
+    void main()
+    {
+        color = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+    }
+)glsl";
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode);
 
