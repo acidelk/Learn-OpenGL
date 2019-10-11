@@ -4,30 +4,28 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <cmath>
 
 const GLchar *vertex_shader_source = R"glsl(
     #version 330 core
     layout (location = 0) in vec3 position;
     void main()
     {
-        gl_Position = vec4(position.x, position.y, position.z, 1.0);
+        gl_Position = vec4(position, 1.0);
     }
 )glsl";
 
 const GLchar *fragment_shader_source = R"glsl(
     #version 330 core
     out vec4 color;
+    uniform vec4 vertexColor;
     void main()
     {
-        color = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+        color = vertexColor;
     }
 )glsl";
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode);
-
-float random_float(float min, float max) {
-    return ((float) random() / RAND_MAX) * (max - min) + min;
-}
 
 void check_compilation_status(GLuint shader) {
     GLint success;
@@ -132,14 +130,19 @@ int main() {
     glBindVertexArray(0);
 
 
-    glUseProgram(shader_program);
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glUseProgram(shader_program);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        GLfloat time = glfwGetTime();
+        GLfloat green_value = (cos(time) / 2) + 0.5f;
+        GLuint color_location =  glGetUniformLocation(shader_program, "vertexColor");
+        glUniform4f(color_location, 0.0f, green_value, 0.0f, 1.0f);
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
