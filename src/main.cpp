@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h>
 #include <cmath>
 #include "shader.h"
-
+#include <SOIL/SOIL.h>
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode);
 
