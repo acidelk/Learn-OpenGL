@@ -11,7 +11,6 @@
 
 # Compiled Dynamic libraries
 *.so
-*.dylib
 *.dll
 
 # Fortran module files
@@ -21,7 +20,6 @@
 # Compiled Static libraries
 *.lai
 *.la
-*.a
 *.lib
 
 # Executables
@@ -42,7 +40,6 @@
 
 include/divisible/*
 bin/*
-lib/*
 test/test_runner
 
 ## Local
