@@ -21,4 +21,4 @@ link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 # Define the executable
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} glfw.3 glew SOIL "-framework OpenGL")
+target_link_libraries(${PROJECT_NAME} glfw.3 glew soil "-framework CoreFoundation" "-framework OpenGL")

@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h>
 #include <cmath>
 #include "shader.h"
-#include <SOIL/SOIL.h>
+#include <SOIL.h>
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode);
 
@@ -35,8 +35,12 @@ int main() {
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
 
-    Shader shaders("../shaders/shader.vx",
-                   "../shaders/shader.frag");
+    Shader shaders("../shaders/shader.vertex",
+                   "../shaders/shader.fragment");
+
+    int imgWidth, imgHeight;
+    unsigned char *image = SOIL_load_image("../img/container.jpg", &imgWidth, &imgHeight, 0, SOIL_LOAD_RGB);
+
     GLfloat vertices[] = {
             0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
             -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
