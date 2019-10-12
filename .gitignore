@@ -53,9 +53,8 @@ build/release/*
 build/debug/*
 build/run/*
 
-include/*
-lib/*
 bin/*
+build/
 .bash/
 bin/bootstrap
 bin/lib-bash
