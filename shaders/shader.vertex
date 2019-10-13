@@ -1,10 +1,16 @@
 #version 330 core
-uniform vec3 angle;
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 color;
+layout (location = 2) in vec2 coords;
+
 out vec3 ourColor;
+out vec2 texCoords;
+
+uniform vec3 angle;
+
 void main()
 {
     gl_Position = vec4(position + angle, 1.0);
     ourColor = color;
+    texCoords = coords;
 }
