@@ -6,11 +6,11 @@ layout (location = 2) in vec2 coords;
 out vec3 ourColor;
 out vec2 texCoords;
 
-uniform vec3 angle;
+uniform mat4 transformer;
 
 void main()
 {
-    gl_Position = vec4(position + angle, 1.0);
+    gl_Position = transformer * vec4(position, 1.0f);
     ourColor = color;
-    texCoords = coords;
+    texCoords = vec2(coords.x, coords.y - 1.0f);
 }

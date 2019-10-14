@@ -5,12 +5,19 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <cmath>
-#include "shader.h"
+#include "shader.hpp"
 #include <SOIL.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode);
 
+GLfloat mixed = 0.0f;
+
 int main() {
+
+
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -40,10 +47,10 @@ int main() {
 
     GLfloat vertices[] = {
             /* position */         /* color */          /* texture position */
-            0.5f, 0.5f, 0.0f,       1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
-            0.5f, -0.5f, 0.0f,      0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
-            -0.5f, -0.5f, 0.0f,     0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
-            -0.5f, 0.5f, 0.0f,      0.0f, 0.0f, 0.0f,   0.0f, 0.0f
+            0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+            -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
     };
 
     GLuint indices[] = {
@@ -125,6 +132,7 @@ int main() {
     GLint texture_2_location = glGetUniformLocation(shaders.program, "ourTexture2");
     glUniform1i(texture_2_location, 1);
 
+
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
@@ -132,12 +140,27 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        GLfloat time = glfwGetTime();
-        GLfloat angle = (sin(time) / 2);
-        GLint angle_location = glGetUniformLocation(shaders.program, "angle");
-        glUniform3f(angle_location, angle, 0.0f, 0.0f);
+
+        GLint mixed_location = glGetUniformLocation(shaders.program, "mixed");
+        glUniform1f(mixed_location, mixed);
+
+
+        glm::mat4 trans(1.0f);
+        trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0.0f));
+        trans = glm::rotate(trans, glm::radians((GLfloat) glfwGetTime() * 40.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
+        GLint transformer_location = glGetUniformLocation(shaders.program, "transformer");
+        glUniformMatrix4fv(transformer_location, 1, GL_FALSE, glm::value_ptr(trans));
 
         glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        GLfloat scale = ((sin(glfwGetTime()) / 2) + 1.0f) / 2;
+        glm::mat4 scaleMat(1.0f);
+        scaleMat = glm::translate(scaleMat, glm::vec3(0.5f, 0.5f, 0.0f));
+        scaleMat = glm::scale(scaleMat, glm::vec3(scale, scale, scale));
+        glUniformMatrix4fv(transformer_location, 1, GL_FALSE, glm::value_ptr(scaleMat));
+
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
@@ -152,6 +175,21 @@ int main() {
 }
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode) {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
+    }
+    if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
+        if (mixed >= 1.0f) {
+            mixed = 1.0f;
+        } else {
+            mixed += 0.05f;
+        }
+    }
+    if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
+        if (mixed <= 0.0f) {
+            mixed = 0.0f;
+        } else {
+            mixed -= 0.05f;
+        }
+    }
 }
