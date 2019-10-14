@@ -40,10 +40,10 @@ int main() {
 
     GLfloat vertices[] = {
             /* position */         /* color */          /* texture position */
-            0.5f, 0.5f, 0.0f,       1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
-            0.5f, -0.5f, 0.0f,      0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
-            -0.5f, -0.5f, 0.0f,     0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
-            -0.5f, 0.5f, 0.0f,      0.0f, 0.0f, 0.0f,   0.0f, 1.0f
+            0.5f, 0.5f, 0.0f,       1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+            0.5f, -0.5f, 0.0f,      0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
+            -0.5f, -0.5f, 0.0f,     0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
+            -0.5f, 0.5f, 0.0f,      0.0f, 0.0f, 0.0f,   0.0f, 0.0f
     };
 
     GLuint indices[] = {
@@ -75,9 +75,13 @@ int main() {
 
     glBindVertexArray(0);
 
-    GLuint texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+
+    GLuint texture1, texture2;
+
+    // texxture 1
+    glGenTextures(1, &texture1);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -93,8 +97,34 @@ int main() {
     glBindTexture(GL_TEXTURE_2D, 0);
 
 
+    // texture 2
+    glGenTextures(1, &texture2);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    image = SOIL_load_image("../img/awesomeface.png", &imgWidth, &imgHeight, 0, SOIL_LOAD_RGB);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imgWidth, imgHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    SOIL_free_image_data(image);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     shaders.Use();
-    glBindTexture(GL_TEXTURE_2D, texture);
+    // set uniform textures for fragment shader
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    GLint texture_1_location = glGetUniformLocation(shaders.program, "ourTexture1");
+    glUniform1i(texture_1_location, 0);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+    GLint texture_2_location = glGetUniformLocation(shaders.program, "ourTexture2");
+    glUniform1i(texture_2_location, 1);
+
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
