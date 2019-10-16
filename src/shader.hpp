@@ -9,11 +9,9 @@
 
 class Shader {
 public:
-    GLuint program{};
+    GLuint id{};
 
-    Shader(const GLchar *vertex_path, const GLchar *fragment_path);
-
-    void Use();
+    Shader(const GLchar *path, GLuint type);
 };
 
 #endif
